@@ -12,7 +12,19 @@
 </head>
 <body>
 <h1>Social Login app</h1>
-<div class="container"></div>
-</body>
+<div class="container unauthenticated">
+    Uwierzytelnij mnie przez GITHUB: <a href="/oauth/authorization/github">tutaj</a>
+</div>
+<div class="container authenticated" style="display: none">
+    Jesteś zalogowany jako <span id="user"></span>
+</div>
 
+<script type="text/javascript">
+    $.get("user", function (data) {
+        $("#user").html(data.name);
+        $(".unauthenticated").hide();
+        $(".authenticated").show();
+    })
+</script>
+</body>
 </html>
