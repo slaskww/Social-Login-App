@@ -2,11 +2,15 @@ package com.example.oauth2sociallogin;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+import java.util.Map;
+
+@RestController
 @SpringBootApplication
 public class Oauth2SocialLoginApplication  {
 
@@ -15,4 +19,11 @@ public class Oauth2SocialLoginApplication  {
 		SpringApplication.run(Oauth2SocialLoginApplication.class, args);
 	}
 
+
+@GetMapping("/user")
+	public Map<String, Object> user(@AuthenticationPrincipal OAuth2User oauth2User){
+
+		return Collections.singletonMap("name", oauth2User.getAttribute("login"));
+
+}
 }
