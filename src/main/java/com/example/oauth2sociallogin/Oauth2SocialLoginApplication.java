@@ -23,6 +23,7 @@ public class Oauth2SocialLoginApplication  {
 @GetMapping("/user")
 	public Map<String, Object> user(@AuthenticationPrincipal OAuth2User oauth2User){
 
+		//oauth2User.getAttributes().entrySet().stream().forEach(stringObjectEntry -> System.out.println(stringObjectEntry.getKey() + ":" + stringObjectEntry.getValue().toString()));
 		return Collections.singletonMap("name", oauth2User.getAttribute("login"));
 
 }
