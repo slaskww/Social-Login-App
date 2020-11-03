@@ -9,14 +9,22 @@
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-
 </head>
 <body class="text-center">
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-    <header>
+    <header class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3">
+        <img src="/static/img/plum.png" class="my-0 mr-md-auto img-fluid" alt="icon"/>
+        <a href="#" class="my-2 my-md-0 mr-md-3"></a>
+        <button onclick="logout()" class="btn btn-primary authenticated" style="display: none">logout</button>
     </header>
     <main role="main" class="inner cover">
         <h1 class="cover-heading">Social Login app</h1>
+        <div class="container authenticated alert alert-success" role="alert" style="display: none">
+            Jesteś zalogowany jako <span class="font-weight-bold" id="user"></span>
+        </div>
+        <div class="container logged-out alert alert-info" role="alert" style="display: none">
+            Zostałeś wylogowany z aplikacji
+        </div>
         <div class="container unauthenticated">
             <p class="lead">
                 Uwierzytelnij mnie przez
@@ -25,9 +33,6 @@
                 <a href="/oauth2/authorization/github" class="btn btn-dark">GITHUB</a>
             </p>
         </div>
-        <div class="container authenticated alert alert-success" role="alert" style="display: none">
-            Jesteś zalogowany jako <span class="font-weight-bold" id="user"></span>
-        </div>
     </main>
 </div>
 <footer class="mastfoot mt-auto">
@@ -35,12 +40,35 @@
         <p>Social Login App by <a href="#">@slaskww</a>.</p>
     </div>
 </footer>
+
+<script type="text/javascript"
+        src="/webjars/js-cookie/js.cookie.js"></script>
 <script type="text/javascript">
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if(settings.type == 'POST' || settings.type == 'PUT' || settings.type == 'DELETE'){
+                if(!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))){
+                    xhr.setRequestHeader("X-XSRF-TOKEN", Cookies.get('XSRF-TOKEN'));
+                }
+            }
+        }
+    });
+
     $.get("/user", function (data) {
         $("#user").html(data.name);
         $(".unauthenticated").hide();
         $(".authenticated").show();
-    })
+    });
+
+    var logout = function () {
+        $.post("/logout", function () {
+            $("#user").html("");
+            $(".unauthenticated").show();
+            $(".authenticated").hide();
+            $(".logged-out").show();
+            return true;
+        });
+    }
 </script>
 </body>
 </html>
