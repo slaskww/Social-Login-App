@@ -22,6 +22,8 @@
         <div class="container authenticated alert alert-success" role="alert" style="display: none">
             Jesteś zalogowany jako <span class="font-weight-bold" id="user"></span>
         </div>
+        <div class="container alert alert-danger error" style="display: none">
+        </div>
         <div class="container logged-out alert alert-info" role="alert" style="display: none">
             Zostałeś wylogowany z aplikacji
         </div>
@@ -31,7 +33,7 @@
             </p>
             <p class="lead">
                 <a href="/oauth2/authorization/github" class="btn btn-dark">GITHUB</a>
-                <a href="/oauth2/authorization/google" class="btn btn-dark">GOOGLE</a>
+                <a href="/oauth2/authorization/google" class="btn btn-danger">GOOGLE</a>
             </p>
         </div>
     </main>
@@ -56,7 +58,12 @@
     });
 
     $.get("/user", function (data) {
-        $("#user").html(data.name);
+
+        if(!data.githubLogin){
+            $("#user").html(data.googleName);
+        }else
+            $("#user").html(data.githubLogin);
+
         $(".unauthenticated").hide();
         $(".authenticated").show();
     });
@@ -70,6 +77,14 @@
             return true;
         });
     }
+
+    $.get("/error", function (data) {
+        if(data){
+            $(".error").html(data).show();
+
+        } else
+            $(".error").html("");
+    })
 </script>
 </body>
 </html>
