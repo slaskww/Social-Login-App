@@ -9,6 +9,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.stereotype.Component;
 
+
+
 @Component
 public class WebConfig extends WebSecurityConfigurerAdapter {
 
@@ -28,9 +30,11 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 )
                 .oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer
                         .failureHandler((request, response, exception) -> {
-                            request.getSession().setAttribute("error.message", exception.getMessage());
+                            request.getSession().setAttribute("errorMsg", exception.getMessage());
                             handler.onAuthenticationFailure(request, response, exception);
                         })
                 );
     }
+
+
 }

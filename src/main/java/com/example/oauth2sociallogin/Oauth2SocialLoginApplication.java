@@ -33,8 +33,9 @@ public class Oauth2SocialLoginApplication  {
 
 @GetMapping("/error")
     public String getError(HttpServletRequest request){
-	    String message = (String) request.getSession().getAttribute("error.message");
-	    request.getSession().removeAttribute("error.message");
+	    String message = (String) request.getSession().getAttribute("errorMsg");
+
+	    request.getSession().removeAttribute("errorMsg");
 	    return message;
 }
 }
