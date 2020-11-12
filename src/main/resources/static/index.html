@@ -20,9 +20,7 @@ xmlns:th="http://www.thymeleaf.org">
     </header>
     <main role="main" class="inner cover">
         <h1 class="cover-heading">Social Login app</h1>
-        <div class="testow">
-<a href="/login">login with credentials</a>
-        </div>
+
 <!--        <form th:action="@{/}" method="post">
             <div>
                 <label>Username:</label>
@@ -50,6 +48,10 @@ xmlns:th="http://www.thymeleaf.org">
                 Uwierzytelnij mnie przez
             </p>
             <p class="lead">
+                <a href="/login" class="btn btn-info">login with credentials</a>
+            </p>
+            <p class="lead">
+
                 <a href="/oauth2/authorization/github" class="btn btn-dark">GITHUB</a>
                 <a href="/oauth2/authorization/google" class="btn btn-danger">GOOGLE</a>
             </p>
