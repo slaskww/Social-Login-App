@@ -1,16 +1,24 @@
 package com.example.oauth2sociallogin.configuration;
 
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.stereotype.Component;
 
 
-
+@EnableWebSecurity
 @Component
 public class WebConfig extends WebSecurityConfigurerAdapter {
 
@@ -20,7 +28,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
         SimpleUrlAuthenticationFailureHandler handler = new SimpleUrlAuthenticationFailureHandler("/");
         http
                 .authorizeRequests(a -> a
-                        .antMatchers("/", "/error", "/webjars/**","/static/img/**").permitAll()
+                        .antMatchers("/", "/error", "/webjars/**","/static/img/**", "/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
@@ -33,7 +41,27 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                             request.getSession().setAttribute("errorMsg", exception.getMessage());
                             handler.onAuthenticationFailure(request, response, exception);
                         })
-                );
+                )
+                .formLogin()
+                .loginPage("/login")
+                .permitAll();
+    }
+
+    @Override
+    @Bean
+    protected UserDetailsService userDetailsService() {
+        UserDetails user = User
+                .withUsername("adamex")
+                .password(passwordEncoder().encode("123456"))
+                .roles("USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(user);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
 
