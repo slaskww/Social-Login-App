@@ -16,33 +16,33 @@ import java.util.Map;
 @Slf4j
 @RestController
 @SpringBootApplication
-public class Oauth2SocialLoginApplication  {
+public class Oauth2SocialLoginApplication {
 
 
-	public static void main(String[] args) {
-		SpringApplication.run(Oauth2SocialLoginApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Oauth2SocialLoginApplication.class, args);
+    }
 
 
-@GetMapping("/user")
-	public Map<String, Object> user(@AuthenticationPrincipal OAuth2User oauth2User, @AuthenticationPrincipal UserDetails userDetails){
+    @GetMapping("/user")
+    public Map<String, Object> user(@AuthenticationPrincipal OAuth2User oauth2User, @AuthenticationPrincipal UserDetails userDetails) {
 
-	   // oauth2User.getAttributes().entrySet().stream().forEach(stringObjectEntry -> System.out.println(stringObjectEntry.getKey() + ":" + stringObjectEntry.getValue().toString()));
-    Map<String, Object> data = new HashMap<>();
+        //  oauth2User.getAttributes().entrySet().stream().forEach(stringObjectEntry -> System.out.println(stringObjectEntry.getKey() + ":" + stringObjectEntry.getValue().toString()));
+        Map<String, Object> data = new HashMap<>();
 
-if(userDetails == null){
-	data.put("username", oauth2User.getAttribute("name"));
-} else{
-	data.put("username", userDetails.getUsername());
-}
-    return data;
-}
+        if (userDetails == null) {
+            data.put("username", oauth2User.getAttribute("name"));
+        } else {
+            data.put("username", userDetails.getUsername());
+        }
+        return data;
+    }
 
-@GetMapping("/error")
-    public String getError(HttpServletRequest request){
-	    String message = (String) request.getSession().getAttribute("errorMsg");
+    @GetMapping("/error")
+    public String getError(HttpServletRequest request) {
+        String message = (String) request.getSession().getAttribute("errorMsg");
 
-	    request.getSession().removeAttribute("errorMsg");
-	    return message;
-}
+        request.getSession().removeAttribute("errorMsg");
+        return message;
+    }
 }
