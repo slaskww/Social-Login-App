@@ -1,5 +1,7 @@
 package com.example.oauth2sociallogin.controller;
 
+import com.example.oauth2sociallogin.domain.User;
+import com.example.oauth2sociallogin.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,15 +16,22 @@ import java.util.Map;
 @RestController
 public class UserController {
 
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/user")
     public Map<String, Object> getUser(@AuthenticationPrincipal OAuth2User oAuth2User, @AuthenticationPrincipal UserDetails userDetails){
-
 
 
         String username;
         if(userDetails == null){
            // oAuth2User.getAttributes().entrySet().stream().forEach(stringObjectEntry -> log.info(stringObjectEntry.getKey() + ":" + stringObjectEntry.getValue().toString()));
             username = oAuth2User.getAttribute("name");
+           User savedUser = userService.saveUser(oAuth2User);
+           log.info("Provider id:" + savedUser.getOAuth2ProviderId());
         } else
             username = userDetails.getUsername();
         return Collections.singletonMap("username", username);

@@ -1,9 +1,11 @@
 package com.example.oauth2sociallogin.configuration;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -48,6 +50,9 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
+    @Autowired
+    UserDetailsService userDetailsService;
+
     @Override
     @Bean
     protected UserDetailsService userDetailsService() {
@@ -66,4 +71,9 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService)
+        .passwordEncoder(passwordEncoder());
+    }
 }
