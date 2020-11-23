@@ -39,6 +39,12 @@ public class UserService implements UserDetailsService {
 
     public User saveUser(OAuth2User user) {
 
+        String username = getLoginFromOAuthUser(user);
+        Optional<User> persistent  = userRepository.findByUsername(username);
+
+        if(persistent.isPresent())
+            return persistent.get();
+
         User userToPersist = new User();
         if (user.getAttribute("login") != null) //true if OAuth2User authenticated via github
             userToPersist = populateWithGithubData(user);
@@ -80,5 +86,19 @@ public class UserService implements UserDetailsService {
         user.setUsername(login);
         user.setPassword(passwordEncoder.encode("123456"));
         return user;
+    }
+
+    private String getLoginFromOAuthUser(OAuth2User oAuth2User){
+        String username = oAuth2User.getAttribute("login");
+        if (username != null)
+            return username;
+        else{
+            String email = oAuth2User.getAttribute("email");
+            if (email != null) {
+               int indexOfAt = email.indexOf("@");
+               username = email.substring(0, indexOfAt);
+            }
+            return username;
+        }
     }
 }
