@@ -2,7 +2,6 @@ package com.example.oauth2sociallogin.service;
 
 import com.example.oauth2sociallogin.domain.User;
 import com.example.oauth2sociallogin.repository.UserRepository;
-import jdk.jfr.Label;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,48 +28,57 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         Optional<User> user = userRepository.findByUsername(username);
-        if(user.isPresent())
+        if (user.isPresent())
             return user.get();
         else throw new UsernameNotFoundException("User " + username + " does not exist in database");
     }
 
-    public User saveUser(User user){
-       return userRepository.save(user);
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 
-    public User saveUser(OAuth2User user){
+    public User saveUser(OAuth2User user) {
 
         User userToPersist = new User();
-        if(user.getAttribute("login") != null){ //true if OAuth2User authenticated via github
-            userToPersist.setEmail("empty");
-            userToPersist.setFullName(user.getAttribute("name"));
-            Integer providerId = user.getAttribute("id");
-            userToPersist.setOAuth2ProviderId(providerId.toString());
-            userToPersist.setUsername(user.getAttribute("login"));
-            userToPersist.setPassword(passwordEncoder.encode("123456"));
-        } else{
-            userToPersist.setEmail(user.getAttribute("email"));
-            userToPersist.setFullName(user.getAttribute("name"));
-            userToPersist.setOAuth2ProviderId(user.getAttribute("sub"));
-
-            String email = user.getAttribute("email");
-            int indexOfAt;
-
-            String login = "user";
-            if (email != null){
-                indexOfAt = email.indexOf("@");
-                login = email.substring(0,indexOfAt);
-            }
-            userToPersist.setUsername(login);
-            userToPersist.setPassword(passwordEncoder.encode("123456"));
-        }
+        if (user.getAttribute("login") != null) //true if OAuth2User authenticated via github
+            userToPersist = populateWithGithubData(user);
+        else
+            userToPersist = populateWithGoogleData(user);
 
         return userRepository.save(userToPersist);
     }
 
-    public User findUserById(Long id){
+    public User findUserById(Long id) {
 
-       Optional<User> user = userRepository.findById(id);
+        Optional<User> user = userRepository.findById(id);
         return user.orElse(null);
+    }
+
+    private User populateWithGithubData(OAuth2User oAuth2User) {
+        User user = new User();
+        user.setEmail("empty");
+        user.setFullName(oAuth2User.getAttribute("name"));
+        Integer providerId = oAuth2User.getAttribute("id");
+        user.setOAuth2ProviderId(providerId.toString());
+        user.setUsername(oAuth2User.getAttribute("login"));
+        user.setPassword(passwordEncoder.encode("123456"));
+        return user;
+    }
+
+    private User populateWithGoogleData(OAuth2User oAuth2User) {
+        User user = new User();
+        user.setEmail(oAuth2User.getAttribute("email"));
+        user.setFullName(oAuth2User.getAttribute("name"));
+        user.setOAuth2ProviderId(oAuth2User.getAttribute("sub"));
+        String email = oAuth2User.getAttribute("email");
+        int indexOfAt;
+        String login = "user";
+        if (email != null) {
+            indexOfAt = email.indexOf("@");
+            login = email.substring(0, indexOfAt);
+        }
+        user.setUsername(login);
+        user.setPassword(passwordEncoder.encode("123456"));
+        return user;
     }
 }
