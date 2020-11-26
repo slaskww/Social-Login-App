@@ -23,9 +23,8 @@ public class ProfileController {
     public String getProfile(Model model){
 
         User user = userService.findUserById(11L);
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("name", user.getFullName());
-        model.addAttribute("email", user.getEmail());
+        model.addAttribute("user", user);
+        model.addAttribute("disabled", false);
         return "profile";
     }
 }
