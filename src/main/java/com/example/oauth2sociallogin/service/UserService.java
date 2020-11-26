@@ -54,6 +54,10 @@ public class UserService implements UserDetailsService {
         return userRepository.save(userToPersist);
     }
 
+    public User updateUser(User user){
+      return   userRepository.save(user);
+    }
+
     public User findUserById(Long id) {
 
         Optional<User> user = userRepository.findById(id);

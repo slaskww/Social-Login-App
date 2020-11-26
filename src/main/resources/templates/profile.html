@@ -16,43 +16,51 @@
         <button class="btn btn-primary authenticated" style="display: none">logout</button>
     </header>
     <main role="main" class="container">
+        <h2 class="mb-5 font-weight-bold bg-success text-white">Dane użytkownika</h2>
         <div class="row">
             <div class="col">
-                <h1>Dane użytkownika:</h1>
                 <form th:method="post" th:action="@{/profile}" th:object="${user}">
+                    <input type="text" th:field="*{id}" hidden>
+                    <input type="text" th:field="*{username}" hidden>
                     <div class="form-group">
-                        <label for="username">Nazwa użytkownika</label>
-                        <input type="text" class="form-control" name="username" id="username" th:field="*{username}" disabled>
-                        <small class="form-text text-muted">Nazwa użytkownika powinna zawierać co najmniej 6 znaków</small>
+                        <label for="user" class="float-left font-weight-bold">nazwa użytkownika</label>
+                        <input type="text" class="form-control" name="user" id="user" th:value="*{username}"
+                               disabled>
                     </div>
                     <div class="form-group">
-                        <label for="fullname">Imię i nazwisko</label>
-                        <input type="text" class="form-control" name="fullname" id="fullname" th:field="*{fullName}" disabled>
-                        <small class="form-text text-muted">np. Jan Nowak</small>
+                        <label for="fullname" class="float-left font-weight-bold">Imię i nazwisko</label>
+                        <input type="text" class="form-control" name="fullname" id="fullname" th:field="*{fullName}"
+                               th:disabled="${disabled}">
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" name="email" id="email" th:field="*{email}" disabled>
-                        <small></small>
+                        <label for="email" class="float-left font-weight-bold">Email</label>
+                        <input type="email" class="form-control" name="email" id="email" th:field="*{email}"
+                               th:disabled="${disabled}">
                     </div>
                     <div class="form-group">
-                        <label for="password">Hasło</label>
-                        <input type="text" class="form-control" name="password" id="password" th:field="*{password}" disabled>
-                        <small class="form-text text-muted">Hasło powinno zawierać min 8 znaków w tym znaki specjalne</small>
+                        <label for="password" class="float-left font-weight-bold">Hasło</label>
+                        <input type="text" class="form-control" name="password" id="password" th:field="*{password}"
+                               th:disabled="${disabled}">
+                        <small class="form-text text-muted">Hasło powinno zawierać min 8 znaków w tym znaki specjalne
+                        </small>
                     </div>
                     <th:block th:switch="${disabled}">
                         <th:block th:case="true">
                             <input type="submit" class="btn btn-primary" value="edytuj" name="edit">
                         </th:block>
                         <th:block th:case="false">
-                            <input type="submit" class="btn btn-lg btn-primary" value="zapisz" name="save">
-                            <input type="submit" class="btn btn-secondary btn-lg" value="anuluj" name="cancel">
+                            <input type="submit" class="btn btn-primary" value="zapisz" name="save">
+                            <input type="submit" class="btn btn-secondary" value="anuluj" name="cancel">
                         </th:block>
                     </th:block>
                 </form>
             </div>
             <div class="col">
-                <img src="/static/img/plum.png" class="my-0 mr-md-auto img-fluid" alt="icon"/>
+                <span class="form-text font-weight-bold">Twój avatar</span>
+                <div>
+                    <img src="/static/img/plum.png" class="my-2 mr-md-auto img-fluid" alt="icon"/>
+                </div>
+
             </div>
         </div>
     </main>
