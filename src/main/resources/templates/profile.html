@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en"
+xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+</head>
+<body class="text-center">
+<div>
+    <header class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3">
+        <img src="/static/img/plum.png" class="my-0 mr-md-auto img-fluid" alt="icon"/>
+        <a href="#" class="my-2 my-md-0 mr-md-3"></a>
+        <button class="btn btn-primary authenticated" style="display: none">logout</button>
+    </header>
+    <main role="main" class="inner cover">
+        <div >
+            <h1>User data</h1>
+            <img src="/static/img/plum.png" class="my-0 mr-md-auto img-fluid" alt="icon"/>
+            <div >
+                username: <th th:text="${username}"></th>
+            </div>
+            <div >
+                Fullname: <th th:text="${name}"></th>
+            </div>
+            <div >
+                Email: <th th:text="${email}"></th>
+            </div>
+
+
+
+        </div>
+    </main>
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <p>Social Login App by <a href="#">@slaskww</a>.</p>
+        </div>
+    </footer>
+</div>
+
+</body>
+</html>

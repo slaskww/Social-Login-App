@@ -29,9 +29,8 @@ public class UserController {
         String username;
         if(userDetails == null){
            // oAuth2User.getAttributes().entrySet().stream().forEach(stringObjectEntry -> log.info(stringObjectEntry.getKey() + ":" + stringObjectEntry.getValue().toString()));
-            username = oAuth2User.getAttribute("name");
            User savedUser = userService.saveUser(oAuth2User);
-           log.info("Provider id:" + savedUser.getOAuth2ProviderId());
+           username = savedUser.getUsername();
         } else
             username = userDetails.getUsername();
         return Collections.singletonMap("username", username);
