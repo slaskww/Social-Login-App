@@ -22,6 +22,7 @@
                 <form th:method="post" th:action="@{/profile}" th:object="${user}">
                     <input type="text" th:field="*{id}" hidden>
                     <input type="text" th:field="*{username}" hidden>
+                    <input type="text" th:field="*{password}" hidden>
                     <div class="form-group">
                         <label for="user" class="float-left font-weight-bold">nazwa użytkownika</label>
                         <input type="text" class="form-control" name="user" id="user" th:value="*{username}"
@@ -37,23 +38,39 @@
                         <input type="email" class="form-control" name="email" id="email" th:field="*{email}"
                                th:disabled="${disabled}">
                     </div>
-                    <div class="form-group">
-                        <label for="password" class="float-left font-weight-bold">Hasło</label>
-                        <input type="text" class="form-control" name="password" id="password" th:field="*{password}"
-                               th:disabled="${disabled}">
-                        <small class="form-text text-muted">Hasło powinno zawierać min 8 znaków w tym znaki specjalne
-                        </small>
-                    </div>
+
                     <th:block th:switch="${disabled}">
                         <th:block th:case="true">
-                            <input type="submit" class="btn btn-primary" value="edytuj" name="edit">
+                            <input type="submit" class="btn btn-primary" value="edytuj profil" name="edit">
                         </th:block>
                         <th:block th:case="false">
                             <input type="submit" class="btn btn-primary" value="zapisz" name="save">
                             <input type="submit" class="btn btn-secondary" value="anuluj" name="cancel">
                         </th:block>
                     </th:block>
+
                 </form>
+                <form method="post" th:action="@{/profile}">
+                    <div class="form-group">
+                        <label for="pass" class="float-left font-weight-bold">hasło</label>
+                        <input type="password" class="form-control" id="pass" name="pass"  th:disabled="${pdisabled}">
+                        <small class="form-text text-muted">hasło powinno zawierać minimum 8 znaków w tym snaki specjalne</small></div>
+                    <div class="form-group">
+                        <label for="repass" class="float-left font-weight-bold">powtórz hasło</label>
+                        <input type="password" class="form-control" id="repass" name="repass"  th:disabled="${pdisabled}">
+                    </div>
+
+                    <th:block th:switch="${pdisabled}">
+                        <th:block th:case="true">
+                            <input type="submit" class="btn btn-primary" name="pedit" value="zmień hasło">
+                        </th:block>
+                        <th:block th:case="false">
+                            <input type="submit" class="btn btn-primary" name="psave" value="zapisz hasło">
+                            <input type="submit" class="btn btn-secondary" name="cancel" value="anuluj">
+                        </th:block>
+                    </th:block>
+                </form>
+
             </div>
             <div class="col">
                 <span class="form-text font-weight-bold">Twój avatar</span>
