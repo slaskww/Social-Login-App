@@ -49,12 +49,18 @@
                         </th:block>
                     </th:block>
 
+                    <th:block th:if="${#fields.hasErrors()}">
+                        <th:block th:each="error : ${#fields.errors()}">
+                            <div class="alert alert-danger" role="alert" th:text="${error}">
+                            </div>
+                        </th:block>
+                    </th:block>
                 </form>
                 <form method="post" th:action="@{/profile}">
                     <div class="form-group">
                         <label for="pass" class="float-left font-weight-bold">hasło</label>
-                        <input type="password" class="form-control" id="pass" name="pass"  th:disabled="${pdisabled}">
-                        <small class="form-text text-muted">hasło powinno zawierać minimum 8 znaków w tym snaki specjalne</small></div>
+                        <input type="password" class="form-control" id="pass" name="pass" th:disabled="${pdisabled}">
+                        <small class="form-text text-muted">hasło powinno zawierać minimum 8 znaków w tym znaki specjalne</small></div>
                     <div class="form-group">
                         <label for="repass" class="float-left font-weight-bold">powtórz hasło</label>
                         <input type="password" class="form-control" id="repass" name="repass"  th:disabled="${pdisabled}">
@@ -69,6 +75,13 @@
                             <input type="submit" class="btn btn-secondary" name="cancel" value="anuluj">
                         </th:block>
                     </th:block>
+
+<!--                    <th:block th:if="${#fields.hasErrors()}">-->
+<!--                        <th:block th:each="error : ${#fields.errors()}">-->
+<!--                            <div th:text="${error}" class="alert alert-danger" role="alert">-->
+<!--                            </div>-->
+<!--                        </th:block>-->
+<!--                    </th:block>-->
                 </form>
 
             </div>
