@@ -2,14 +2,15 @@ package com.example.oauth2sociallogin.controller;
 
 import com.example.oauth2sociallogin.domain.User;
 import com.example.oauth2sociallogin.service.UserService;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 @Slf4j
 @Controller
@@ -22,6 +23,11 @@ public class ProfileController {
         this.userService = userService;
     }
 
+    @ModelAttribute("passwordDto")
+    public PasswordDTO getPasswordDTO(){
+        return new PasswordDTO();
+    }
+
     @GetMapping
     public String getProfile(Model model){
 
@@ -29,6 +35,7 @@ public class ProfileController {
         model.addAttribute("user", user);
         model.addAttribute("disabled", true);
         model.addAttribute("pdisabled", true);
+
         return "profile";
     }
 
@@ -55,6 +62,7 @@ public class ProfileController {
             log.info("Errors " + errors.getFieldError().getField());
             model.addAttribute("disabled", false);
             model.addAttribute("pdisabled", true);
+
             return "profile";
         }
         log.info(userToSave.toString());
@@ -72,9 +80,31 @@ public class ProfileController {
     }
 
     @PostMapping(params = {"psave"})
-    public String updatePassword(@RequestParam("pass") String pass, @RequestParam("repass") String repass){
-        log.info("haslo {}, re-hasło {}", pass, repass);
+    public String updatePassword(
+                                 @Valid @ModelAttribute("passwordDto") PasswordDTO passwordDTO, BindingResult errors,
+                                 Model model, @ModelAttribute("user") User userToSave){
+
+
+        if(errors.hasErrors()){
+            model.addAttribute("disabled", true);
+            model.addAttribute("pdisabled", false);
+            return "profile";
+        }
+        log.info("password={}, re-password={}", passwordDTO.getPassword(), passwordDTO.getRePassword());
         return "redirect:/profile";
+    }
+
+
+    @Data
+    private static class PasswordDTO{
+
+        @Size(min = 5, message = "Podane hasło jest za krótkie")
+        private String password;
+
+        @Size(min = 5, message = "Podane powtórne hasło jest za krótkie")
+        private String rePassword;
+
+
     }
 
 }
