@@ -56,7 +56,10 @@ public class ProfileController {
     }
 
     @PostMapping(params = {"save"})
-    public String updateUser(@Valid @ModelAttribute("user") User userToSave, BindingResult errors, Model model){
+    public String updateUser(
+            @Valid @ModelAttribute("user") User userToSave,
+            BindingResult errors,
+            Model model){
 
         if(errors.hasErrors()){
             log.info("Errors " + errors.getFieldError().getField());
@@ -81,11 +84,14 @@ public class ProfileController {
 
     @PostMapping(params = {"psave"})
     public String updatePassword(
-                                 @Valid @ModelAttribute("passwordDto") PasswordDTO passwordDTO, BindingResult errors,
-                                 Model model, @ModelAttribute("user") User userToSave){
+                                 @Valid @ModelAttribute("passwordDto") PasswordDTO passwordDTO,
+                                 BindingResult errors,
+                                 Model model){
 
 
         if(errors.hasErrors()){
+            User user = userService.findUserById(14L);
+            model.addAttribute("user", user);
             model.addAttribute("disabled", true);
             model.addAttribute("pdisabled", false);
             return "profile";

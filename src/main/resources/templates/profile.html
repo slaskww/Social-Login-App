@@ -60,7 +60,8 @@
                     <div class="form-group">
                         <label for="pass" class="float-left font-weight-bold">hasło</label>
                         <input type="password" class="form-control" id="pass" name="pass" th:field="*{password}" th:disabled="${pdisabled}">
-                        <small class="form-text text-muted">hasło powinno zawierać minimum 8 znaków w tym znaki specjalne</small></div>
+                        <small class="form-text text-muted">hasło powinno zawierać minimum 8 znaków w tym znaki specjalne</small>
+                    </div>
                     <div class="form-group">
                         <label for="repass" class="float-left font-weight-bold">powtórz hasło</label>
                         <input type="password" class="form-control" id="repass" name="repass" th:field="*{rePassword}" th:disabled="${pdisabled}">
