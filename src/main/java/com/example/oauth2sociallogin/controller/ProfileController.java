@@ -8,9 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
+import java.io.IOException;
 
 @Slf4j
 @Controller
@@ -100,6 +102,34 @@ public class ProfileController {
         return "redirect:/profile";
     }
 
+    @PostMapping(params = {"upload"})
+    public String uploadFile(@RequestParam MultipartFile file) throws IOException {
+
+        if(isFileValid(file)){
+            log.info("FILE READY TO PERSIST");
+            log.info("contentType={}", file.getContentType());
+            log.info("getName={}", file.getName());
+            log.info("originalFilename={}",file.getOriginalFilename());
+            log.info("size={}",(file.getSize()));
+        } else {
+            log.info("FILE CANNOT BE SAVED");
+            log.info("contentType={}", file.getContentType());
+            log.info("getName={}", file.getName());
+            log.info("originalFilename={}",file.getOriginalFilename());
+            log.info("size={}",(file.getSize()));
+        }
+        return "redirect:/profile";
+    }
+
+    private boolean isFileValid(MultipartFile file) throws IOException {
+
+        if(file.isEmpty()) return false;
+        if(file.getName() == null) return false;
+        if(file.getContentType() == null) return false;
+        if(file.getBytes() == null) return false;
+
+        return true;
+    }
 
     @Data
     private static class PasswordDTO{
@@ -109,7 +139,6 @@ public class ProfileController {
 
         @Size(min = 5, message = "Podane powtórne hasło jest za krótkie")
         private String rePassword;
-
 
     }
 

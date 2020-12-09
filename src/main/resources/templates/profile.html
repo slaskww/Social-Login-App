@@ -90,6 +90,11 @@
                 <span class="form-text font-weight-bold">Twój avatar</span>
                 <div>
                     <img src="/static/img/plum.png" class="my-2 mr-md-auto img-fluid" alt="icon"/>
+                    <form method="post" th:action="@{/profile}" enctype="multipart/form-data">
+                        <label for="file">Dodaj zdjęcie</label>
+                        <input type="file" name="file" id="file" accept="image/*">
+                        <input type="submit" name="upload" value="załaduj zdjęcie">
+                    </form>
                 </div>
 
             </div>
