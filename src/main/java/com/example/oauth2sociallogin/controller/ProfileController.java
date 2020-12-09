@@ -1,6 +1,8 @@
 package com.example.oauth2sociallogin.controller;
 
+import com.example.oauth2sociallogin.domain.File;
 import com.example.oauth2sociallogin.domain.User;
+import com.example.oauth2sociallogin.service.FileService;
 import com.example.oauth2sociallogin.service.UserService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +22,11 @@ import java.io.IOException;
 public class ProfileController {
 
     private final UserService userService;
+    private final FileService fileService;
 
-    public ProfileController(UserService userService) {
+    public ProfileController(UserService userService, FileService fileService) {
         this.userService = userService;
+        this.fileService = fileService;
     }
 
     @ModelAttribute("passwordDto")
@@ -107,10 +111,14 @@ public class ProfileController {
 
         if(isFileValid(file)){
             log.info("FILE READY TO PERSIST");
-            log.info("contentType={}", file.getContentType());
-            log.info("getName={}", file.getName());
-            log.info("originalFilename={}",file.getOriginalFilename());
-            log.info("size={}",(file.getSize()));
+            Long savedFileId = fileService.uploadFile(file);
+            log.info("File saved. Set id={}", savedFileId);
+
+            File loadedFile = fileService.getFile(savedFileId);
+            log.info("File loaded.");
+            log.info("contentTypeSize={}", loadedFile.getContent().length);
+            log.info("getName={}", loadedFile.getFileName());
+            log.info("contentType={}",(loadedFile.getContentType()));
         } else {
             log.info("FILE CANNOT BE SAVED");
             log.info("contentType={}", file.getContentType());
