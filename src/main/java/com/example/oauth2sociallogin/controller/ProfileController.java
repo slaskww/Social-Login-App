@@ -6,6 +6,10 @@ import com.example.oauth2sociallogin.service.FileService;
 import com.example.oauth2sociallogin.service.UserService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,6 +36,11 @@ public class ProfileController {
     @ModelAttribute("passwordDto")
     public PasswordDTO getPasswordDTO(){
         return new PasswordDTO();
+    }
+
+    @ModelAttribute("hasFile")
+    public Boolean hasUserFile(){
+        return true;
     }
 
     @GetMapping
@@ -127,6 +136,20 @@ public class ProfileController {
             log.info("size={}",(file.getSize()));
         }
         return "redirect:/profile";
+    }
+
+    @GetMapping("/avatar")
+    public ResponseEntity<Resource> getAvatar(){
+
+        log.info("in getAvatar method");
+        File avatar = fileService.getFile(15L);
+        ByteArrayResource content = new ByteArrayResource(avatar.getContent());
+       return ResponseEntity
+                .ok()
+                .contentType(MediaType.valueOf(avatar.getContentType()))
+                .header("Content-Disposition", String.format("filename=%s", avatar.getFileName()))
+                .body(content);
+
     }
 
     private boolean isFileValid(MultipartFile file) throws IOException {

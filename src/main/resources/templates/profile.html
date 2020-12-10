@@ -89,9 +89,15 @@
             <div class="col">
                 <span class="form-text font-weight-bold">Twój avatar</span>
                 <div>
-                    <img src="/static/img/plum.png" class="my-2 mr-md-auto img-fluid" alt="icon"/>
+                    <th:block>
+                        <th:block th:if="${hasFile}">
+                            <img src="/profile/avatar" class="img-fluid w-50"  alt="icon"/>
+                        </th:block>
+                        <th:block th:unless="${hasFile}">
+                            <img src="/static/img/avatar.png" class="my-2 mr-md-auto img-fluid" alt="icon"/>
+                        </th:block>
+                    </th:block>
                     <form method="post" th:action="@{/profile}" enctype="multipart/form-data">
-
                         <div class="form-group">
                             <label for="file" class="my-2 mr-md-auto">Dodaj avatar:</label>
                             <input type="file" name="file" id="file" accept="image/*">

@@ -31,7 +31,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
         SimpleUrlAuthenticationFailureHandler handler = new SimpleUrlAuthenticationFailureHandler("/");
         http
                 .authorizeRequests(a -> a
-                        .antMatchers("/", "/error", "/webjars/**","/static/img/**", "/login", "/profile").permitAll()
+                        .antMatchers("/", "/error", "/webjars/**","/static/img/**", "/login", "/profile/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
