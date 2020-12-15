@@ -19,7 +19,7 @@
         <h2 class="mb-5 font-weight-bold bg-success text-white">Dane użytkownika</h2>
         <div class="row">
             <div class="col">
-                <form th:method="post" th:action="@{/profile}" th:object="${user}">
+                <form th:method="post" th:action="@{/profile}" th:object="${user}" >
                     <input type="text" th:field="*{id}" hidden>
                     <input type="text" th:field="*{username}" hidden>
                     <input type="text" th:field="*{password}" hidden>

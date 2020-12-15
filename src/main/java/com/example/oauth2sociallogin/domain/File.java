@@ -1,6 +1,7 @@
 package com.example.oauth2sociallogin.domain;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,8 @@ public class File {
 
     private String contentType;
     private String fileName;
+
     @Lob
+    @ToString.Exclude
     private byte[] content;
 }

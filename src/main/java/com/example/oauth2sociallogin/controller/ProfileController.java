@@ -155,7 +155,7 @@ public class ProfileController {
     private boolean isFileValid(MultipartFile file) throws IOException {
 
         if(file.isEmpty()) return false;
-        if(file.getName() == null) return false;
+        if(file.getOriginalFilename() == null || file.getOriginalFilename().equals("")) return false;
         if(file.getContentType() == null) return false;
         if(file.getBytes() == null) return false;
 
