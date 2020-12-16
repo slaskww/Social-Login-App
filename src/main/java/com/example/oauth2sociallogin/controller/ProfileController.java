@@ -1,5 +1,6 @@
 package com.example.oauth2sociallogin.controller;
 
+import antlr.StringUtils;
 import com.example.oauth2sociallogin.domain.File;
 import com.example.oauth2sociallogin.domain.User;
 import com.example.oauth2sociallogin.service.FileService;
@@ -13,12 +14,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -103,9 +107,13 @@ public class ProfileController {
                                  BindingResult errors,
                                  Model model){
 
+        if(passwordDTO.hasErrors()){
+            errors.addError( new ObjectError("passwordDto", passwordDTO.getAllErrors()));
+        }
 
         if(errors.hasErrors()){
             User user = userService.findUserById(14L);
+            errors.getAllErrors().forEach(objectError -> log.info(objectError.toString()));
             model.addAttribute("user", user);
             model.addAttribute("disabled", true);
             model.addAttribute("pdisabled", false);
@@ -171,6 +179,53 @@ public class ProfileController {
         @Size(min = 5, message = "Podane powtórne hasło jest za krótkie")
         private String rePassword;
 
+        private StringBuilder errors = new StringBuilder();
+
+
+        public boolean hasErrors(){
+
+            validatePasswords();
+            return !errors.toString().isEmpty();
+        }
+
+        public String getAllErrors(){
+            return errors.toString();
+        }
+
+        private void validatePasswords(){
+
+            if(!equalsPassAndRepass()) errors.append("Podane hasła różnią się. ");
+            if(!hasUpperCase(password)) errors.append("Hasło powinno zawierać wielką literę. ");
+            if(!hasDigits(password)) errors.append("Hasło powinno zawierać cyfry i znaki specjalne.");
+
+        }
+
+        private boolean hasUpperCase(String pwd){
+
+            for (char ch : pwd.toCharArray()){
+                if(Character.isUpperCase(ch)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean hasDigits(String pwd){
+
+            for (char ch : pwd.toCharArray()){
+                if(Character.isDigit(ch)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean equalsPassAndRepass(){
+            return password.equals(rePassword);
+        }
+
+
     }
+
 
 }
