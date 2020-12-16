@@ -1,11 +1,10 @@
 package com.example.oauth2sociallogin.controller;
 
-import antlr.StringUtils;
 import com.example.oauth2sociallogin.domain.File;
 import com.example.oauth2sociallogin.domain.User;
+import com.example.oauth2sociallogin.dto.PasswordDto;
 import com.example.oauth2sociallogin.service.FileService;
 import com.example.oauth2sociallogin.service.UserService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -17,12 +16,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.validation.Valid;
-import javax.validation.constraints.Size;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -38,8 +33,8 @@ public class ProfileController {
     }
 
     @ModelAttribute("passwordDto")
-    public PasswordDTO getPasswordDTO(){
-        return new PasswordDTO();
+    public PasswordDto getPasswordDTO(){
+        return new PasswordDto();
     }
 
     @ModelAttribute("hasFile")
@@ -103,7 +98,7 @@ public class ProfileController {
 
     @PostMapping(params = {"psave"})
     public String updatePassword(
-                                 @Valid @ModelAttribute("passwordDto") PasswordDTO passwordDTO,
+                                 @Valid @ModelAttribute("passwordDto") PasswordDto passwordDTO,
                                  BindingResult errors,
                                  Model model){
 
@@ -113,7 +108,6 @@ public class ProfileController {
 
         if(errors.hasErrors()){
             User user = userService.findUserById(14L);
-            errors.getAllErrors().forEach(objectError -> log.info(objectError.toString()));
             model.addAttribute("user", user);
             model.addAttribute("disabled", true);
             model.addAttribute("pdisabled", false);
@@ -169,63 +163,4 @@ public class ProfileController {
 
         return true;
     }
-
-    @Data
-    private static class PasswordDTO{
-
-        @Size(min = 5, message = "Podane hasło jest za krótkie")
-        private String password;
-
-        @Size(min = 5, message = "Podane powtórne hasło jest za krótkie")
-        private String rePassword;
-
-        private StringBuilder errors = new StringBuilder();
-
-
-        public boolean hasErrors(){
-
-            validatePasswords();
-            return !errors.toString().isEmpty();
-        }
-
-        public String getAllErrors(){
-            return errors.toString();
-        }
-
-        private void validatePasswords(){
-
-            if(!equalsPassAndRepass()) errors.append("Podane hasła różnią się. ");
-            if(!hasUpperCase(password)) errors.append("Hasło powinno zawierać wielką literę. ");
-            if(!hasDigits(password)) errors.append("Hasło powinno zawierać cyfry i znaki specjalne.");
-
-        }
-
-        private boolean hasUpperCase(String pwd){
-
-            for (char ch : pwd.toCharArray()){
-                if(Character.isUpperCase(ch)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private boolean hasDigits(String pwd){
-
-            for (char ch : pwd.toCharArray()){
-                if(Character.isDigit(ch)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private boolean equalsPassAndRepass(){
-            return password.equals(rePassword);
-        }
-
-
-    }
-
-
 }
