@@ -11,6 +11,7 @@
 	<groupId>com.example</groupId>
 	<artifactId>oauth2-social-login</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>oauth2-social-login</name>
 	<description>OAuth2 app based on social login</description>
 
