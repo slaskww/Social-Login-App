@@ -10,6 +10,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,16 +19,20 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Slf4j
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
 
+    private final JdbcTemplate jdbcTemplate;
     private final UserService userService;
     private final FileService fileService;
 
-    public ProfileController(UserService userService, FileService fileService) {
+    public ProfileController(JdbcTemplate jdbcTemplate, UserService userService, FileService fileService) {
+        this.jdbcTemplate = jdbcTemplate;
         this.userService = userService;
         this.fileService = fileService;
     }
@@ -45,12 +50,25 @@ public class ProfileController {
     @GetMapping
     public String getProfile(Model model){
 
+        String sql = "Select id, username, password from User Where id=?";
+        User us = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> mapper(rs, rowNum), 14L);
+        log.info("user_id={}, user_name={}, user_pass={}", us.getId(), us.getUsername(), us.getPassword());
+
         User user = userService.findUserById(14L);
         model.addAttribute("user", user);
         model.addAttribute("disabled", true);
         model.addAttribute("pdisabled", true);
 
         return "profile";
+    }
+
+    private User mapper(ResultSet rs, int id) throws SQLException {
+        User user = new User();
+        user.setId(Long.parseLong(rs.getString("id")));
+        user.setUsername(rs.getString("username"));
+        user.setPassword(rs.getString("password"));
+
+        return user;
     }
 
     @PostMapping(params = {"edit"})
@@ -119,6 +137,8 @@ public class ProfileController {
 
     @PostMapping(params = {"upload"})
     public String uploadFile(@RequestParam MultipartFile file) throws IOException {
+
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
         if(isFileValid(file)){
             log.info("FILE READY TO PERSIST");
